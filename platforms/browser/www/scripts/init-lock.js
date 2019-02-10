@@ -1,75 +1,69 @@
-
 const numberOfKeys = 5;
 const keyLength = 9;
 const keyCodes = [];
 var keyCodeDataBase;
-
 window.onload = function () {
     keyCodeDataBase = window.openDatabase("KeyCodes", "1.0", "Stores Key-Codes", 200000); //name, version, description, size
 }
-
 function initKeyCodes() {
-
-    for (let i = 0; i < numberOfKeys; i++) {
-
-        let kc = Math.random().toString(36).substr(2, keyLength);
-        keyCodes.push(kc);
-    }
-
     keyCodeDataBase.transaction(saveKeys, onSuccess, onError); //call back functions: action, success, fail
 }
 
 function saveKeys(tx) {
-
-    
     tx.executeSql('CREATE TABLE IF NOT EXISTS keyCodes (id INTEGER PRIMARY KEY AUTOINCREMENT, KeyCode TEXT NOT NULL) ');
-
-    for (let i = 0; i < keyCodes.length; i++) {
-
-
-/*
-
- tx.executeSql("INSERT INTO test_table (data, data_num) VALUES (?,?)", ["test", 100], function(tx, res) {
-      console.log("insertId: " + res.insertId + " -- probably 1");
-      console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
-
-    }, function(e) {
-      console.log("ERROR: " + e.message);
-    });
-
-
-*/
-
-        let sql = "INSERT INTO keyCodes(KeyCode) VALUES ('" + keyCodes[i] + "')";
+    for (let i = 0; i < numberOfKeys; i++) {
+        let kc = Math.random().toString(36).substr(2, keyLength);
+        let sql = "INSERT INTO keyCodes(KeyCode) VALUES ('" + kc + "')";
         tx.executeSql(sql);
     }
-    
+}
 
-    alert('asdfasdf');
+function onSuccess() { console.log("Record Saved"); }
+function onError(e) { console.log("SQL error: " + e); }
+
 /*
-    tx.executeSql('DROP TABLE IF EXISTS DEMO');
-    tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id unique, data)');
-    tx.executeSql('INSERT INTO DEMO (id, data) VALUES (1, "First row")');
-    tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
+function getSuccess(tx, result) {
+
+    alert("get Success");
+
+    console.log(result);
+    var rows = result.rows;
+    for (var x = 0; x < rows.length; x++) {
+        var name = result.rows[x].Name;
+        var email = result.rows[x].Email;
+        var out = "<li>" + name + "<br/>" + email + "</li>";
+        document.getElementById('members').innerHTML += out;
+    }
+
+    $('#members').listview('refresh');
+
+}
+function getError(e) {
+    console.log(e);
+}
 */
 
 
+
+/*
+function retrieveData() {
+    keyCodeDataBase.transaction(retrieveKeys, onSuccess, onError); //call back functions: action, success, fail
+    alert("retrieve data func");
+    //var data = localStorage.getItem("storedData");
+    //document.getElementById('result').innerHTML = data;
 }
-function onSuccess() {
-    console.log("Record Saved");
+function retrieveKeys(tx) {
+    tx.executeSql("SELECT * FROM keyCodes",[],getSuccess,onError);
+}
+function getSuccess(tx, result) {
+    console.log(result);
 }
 
-function onError(error) {
-    console.log("SQL error: " + error.code);
-}
+
+
+ store data to local
 function storeData() {
 
     var data = document.getElementById('favourite').value;
     localStorage.setItem("storedData", data);
-}
-
-function retrieveData() {
-
-    var data = localStorage.getItem("storedData");
-    document.getElementById('result').innerHTML = data;
-}
+} */
